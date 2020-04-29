@@ -70,5 +70,5 @@ echo "[info] IPTV-Proxy PID: $iptv-proxypid" | ts '%Y-%m-%d %H:%M:%.S'
 if [ -e /proc/$iptv-proxypid ]; then
 	sleep infinity
 else
-	echo "iptv-proxy failed to start!"
+	echo "[error] iptv-proxy failed to start!" | ts '%Y-%m-%d %H:%M:%.S'
 fi
