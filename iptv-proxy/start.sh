@@ -40,22 +40,26 @@ if [ -z "${PROXY_USER}" ]
 then
     PROXY_USER=iptv
 fi
+echo "[info] Proxy username: ${PROXY_USER}" | ts '%Y-%m-%d %H:%M:%.S'
 
 if [ -z "${PROXY_PASS}" ]
 then
     PROXY_PASS=iptv
 fi
+echo "[info] Proxy password: ${PROXY_PASS}" | ts '%Y-%m-%d %H:%M:%.S'
 
 if [ -z "${PROXY_HOST}" ]
 then
     PROXY_HOST=localhost
 fi
+echo "[info] Proxy host: ${PROXY_HOST}" | ts '%Y-%m-%d %H:%M:%.S'
 
 echo "[info] Starting iptv-proxy daemon..." | ts '%Y-%m-%d %H:%M:%.S'
 if [ -z "${PROXY_PATH}"]
 then
     su $PUSERNAME -c '/bin/bash iptv-proxy --m3u-url "${M3U_URL}" --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST &'
 else
+    echo "[info] Proxy path: ${PROXY_PATH}" | ts '%Y-%m-%d %H:%M:%.S'
     su $PUSERNAME -c '/bin/bash iptv-proxy --m3u-url "${M3U_URL}" --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &'
 fi
 
