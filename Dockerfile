@@ -28,6 +28,7 @@ RUN apt update \
     dos2unix \
     kmod \
     iptables \
+    procps \
     ipcalc\
     grep \
     libcurl4 \

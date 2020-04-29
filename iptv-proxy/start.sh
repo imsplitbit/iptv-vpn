@@ -36,6 +36,12 @@ else
   export UMASK="002"
 fi
 
+if [ -z "${WEB_PORT}" ]
+then
+    WEB_PORT=8080
+fi
+echo "[info] Poxy port: ${WEB_PORT}" | ts '%Y-%m-%d %H:%M:%.S'
+
 if [ -z "${PROXY_USER}" ]
 then
     PROXY_USER=iptv
@@ -54,20 +60,23 @@ then
 fi
 echo "[info] Proxy host: ${PROXY_HOST}" | ts '%Y-%m-%d %H:%M:%.S'
 
+echo "[info] Proxy m3u url: ${M3U_URL}" | ts '%Y-%m-%d %H:%M:%.S'
+echo "[debug] Proxy command: 'iptv-proxy --m3u-url "${M3U_URL}" --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &'"
 echo "[info] Starting iptv-proxy daemon..." | ts '%Y-%m-%d %H:%M:%.S'
-if [ -z "${PROXY_PATH}"]
+if [ -z "${PROXY_PATH}" ]
 then
-    su $PUSERNAME -c '/bin/bash iptv-proxy --m3u-url "${M3U_URL}" --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST &'
+    su $PUSERNAME -c "iptv-proxy --m3u-url '${M3U_URL}' --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST &"
 else
     echo "[info] Proxy path: ${PROXY_PATH}" | ts '%Y-%m-%d %H:%M:%.S'
-    su $PUSERNAME -c '/bin/bash iptv-proxy --m3u-url "${M3U_URL}" --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &'
+    su $PUSERNAME -c "iptv-proxy --m3u-url '${M3U_URL}' --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &"
 fi
 
 sleep 1
-iptv-proxypid=$(pgrep -o -x iptv-proxy) 
-echo "[info] IPTV-Proxy PID: $iptv-proxypid" | ts '%Y-%m-%d %H:%M:%.S'
+iptvproxypid=$(pgrep -o -x iptv-proxy) 
+echo "[info] IPTV-Proxy PID: $iptvproxypid" | ts '%Y-%m-%d %H:%M:%.S'
 
-if [ -e /proc/$iptv-proxypid ]; then
+if [ -e /proc/$iptvproxypid ]; then
+
 	sleep infinity
 else
 	echo "[error] iptv-proxy failed to start!" | ts '%Y-%m-%d %H:%M:%.S'
