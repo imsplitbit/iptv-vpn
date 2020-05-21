@@ -72,12 +72,22 @@ else
 fi
 
 sleep 1
-iptvproxypid=$(pgrep -o -x iptv-proxy) 
+iptvproxypid=$(pgrep -o -x iptv-proxy)
 echo "[info] IPTV-Proxy PID: $iptvproxypid" | ts '%Y-%m-%d %H:%M:%.S'
 
 if [ -e /proc/$iptvproxypid ]; then
-
-	sleep infinity
+    while true
+    do
+        pgrep -o -x iptv-proxy
+        if [ $? -eq 0 ]
+        then
+            # Keep the network traffic over the vpn active (vpn providers might time us out)
+            ping -c 5 8.8.8.8 2>&1 > /dev/null
+            sleep 5
+        else
+            echo "[error] iptv-proxy died!" | ts '%Y-%m-%d %H:%M:%.S'
+            exit 1
+        fi
 else
 	echo "[error] iptv-proxy failed to start!" | ts '%Y-%m-%d %H:%M:%.S'
 fi
