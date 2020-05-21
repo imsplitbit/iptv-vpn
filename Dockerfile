@@ -4,7 +4,7 @@ FROM debian:buster
 MAINTAINER imsplitbit
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV IPTV_VERSION 2.0.1
+ENV IPTV_VERSION 2.0.3
 
 WORKDIR /opt
 
