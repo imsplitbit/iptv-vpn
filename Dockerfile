@@ -55,5 +55,4 @@ ADD iptv-proxy/ /etc/iptv-proxy/
 
 RUN chmod +x /etc/iptv-proxy/*.sh /etc/openvpn/*.sh
 
-EXPOSE 8080
 CMD ["/bin/bash", "/etc/openvpn/start.sh"]

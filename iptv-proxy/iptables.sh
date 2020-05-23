@@ -10,6 +10,10 @@ while : ; do
 	fi
 done
 
+if [ -z "${WEB_PORT}" ]
+then
+    WEB_PORT=8080
+fi
 echo "[info] Web port defined as ${WEB_PORT}" | ts '%Y-%m-%d %H:%M:%.S'
 
 # ip route
@@ -47,7 +51,7 @@ if [[ $iptable_mangle_exit_code == 0 ]]; then
 	echo "[info] iptable_mangle support detected, adding fwmark for tables" | ts '%Y-%m-%d %H:%M:%.S'
 
 	# setup route for iptv-proxy web using set-mark to route traffic for port 8080 to eth0
-	echo "8080    web" >> /etc/iproute2/rt_tables
+	echo "${WEB_PORT}    web" >> /etc/iproute2/rt_tables
 	ip rule add fwmark 1 table web
 	ip route add default via ${DEFAULT_GATEWAY} table web
 
@@ -137,7 +141,7 @@ if [[ $iptable_mangle_exit_code == 0 ]]; then
 		iptables -t mangle -A OUTPUT -p tcp --dport ${WEB_PORT} -j MARK --set-mark 1
 		iptables -t mangle -A OUTPUT -p tcp --sport ${WEB_PORT} -j MARK --set-mark 1
 	fi
-	
+
 fi
 
 # accept output from iptv-proxy web port - used for lan access

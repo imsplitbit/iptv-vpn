@@ -65,7 +65,7 @@ echo "[debug] xtream base url: ${XTREAM_BASE_URL}" | ts '%Y-%m-%d %H:%M:%.S'
 echo "[debug] xtream username: ${XTREAM_USERNAME}" | ts '%Y-%m-%d %H:%M:%.S'
 echo "[debug] xtream password: ${XTREAM_PASSWORD}" | ts '%Y-%m-%d %H:%M:%.S'
 #echo "[debug] Proxy command: 'iptv-proxy --m3u-url ${M3U_URL} --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &'" | ts '%Y-%m-%d %H:%M:%.S'
-echo "[debug] Proxy command: 'iptv-proxy --xtream-base-url ${XTREAM_BASE_URL} --xtream-user ${XTREAM_USERNAME} --xtream-password ${XTREAM_PASSWORD} --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &" | ts '%Y-%m-%d %H:%M:%.S'
+echo "[debug] Proxy command: 'iptv-proxy --xtream-base-url ${XTREAM_BASE_URL} --xtream-user ${XTREAM_USERNAME} --xtream-password ${XTREAM_PASSWORD} --port $WEB_PORT --user $PROXY_USER --password $PROXY_PASS --hostname $PROXY_HOST --custom-endpoint $PROXY_PATH &" | ts '%Y-%m-%d %H:%M:%.S'
 echo "[info] Starting iptv-proxy daemon..." | ts '%Y-%m-%d %H:%M:%.S'
 if [ -z "${PROXY_PATH}" ]
 then
@@ -85,9 +85,13 @@ if [ -e /proc/$iptvproxypid ]; then
         pgrep -o -x iptv-proxy
         if [ $? -eq 0 ]
         then
-            # Keep the network traffic over the vpn active (vpn providers might time us out)
-            ping -c 5 8.8.8.8 2>&1 > /dev/null
-            sleep 5
+	    if ! [ "${VPN_ENABLED}" = "no" ]
+	    then
+		echo "[info] performing keepalive download" | ts '%Y-%m-%d %H:%M:%.S'
+		# Keep the network traffic over the vpn active (vpn providers might time us out)
+		curl -o debian.iso -skSL --limit-rate 1k https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-10.4.0-amd64-DVD-1.iso
+	    fi
+            sleep 1
         else
             echo "[error] iptv-proxy died!" | ts '%Y-%m-%d %H:%M:%.S'
             exit 1
