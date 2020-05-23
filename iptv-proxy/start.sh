@@ -89,7 +89,10 @@ if [ -e /proc/$iptvproxypid ]; then
 	    then
 		echo "[info] performing keepalive download" | ts '%Y-%m-%d %H:%M:%.S'
 		# Keep the network traffic over the vpn active (vpn providers might time us out)
-		curl -o debian.iso -skSL --limit-rate 1k https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-10.4.0-amd64-DVD-1.iso
+		for url in https://releases.ubuntu.com/20.04/ubuntu-20.04-desktop-amd64.iso https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-10.4.0-amd64-DVD-1.iso
+		do
+		    curl -o linux.iso -skSL --limit-rate 1024k $url
+		done
 	    fi
             sleep 1
         else
