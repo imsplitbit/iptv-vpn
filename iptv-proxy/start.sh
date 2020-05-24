@@ -87,12 +87,8 @@ if [ -e /proc/$iptvproxypid ]; then
         then
 	    if ! [ "${VPN_ENABLED}" = "no" ]
 	    then
-		echo "[info] performing keepalive download" | ts '%Y-%m-%d %H:%M:%.S'
-		# Keep the network traffic over the vpn active (vpn providers might time us out)
-		for url in https://releases.ubuntu.com/20.04/ubuntu-20.04-desktop-amd64.iso https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-10.4.0-amd64-DVD-1.iso
-		do
-		    curl -o linux.iso -skSL --limit-rate 1024k $url
-		done
+		echo "[info] performing keepalive noise generation" | ts '%Y-%m-%d %H:%M:%.S'
+		python3 /usr/local/bin/noisy --config /etc/noisy/config.json 2>&1 > /dev/null
 	    fi
             sleep 1
         else

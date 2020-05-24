@@ -19,6 +19,7 @@ RUN apt update \
     wget \
     curl \
     gnupg \
+    git \
     sed \
     openvpn \
     emacs-nox \
@@ -36,11 +37,17 @@ RUN apt update \
     libkrb5-3 \
     zlib1g \
     tzdata \
+    python3 \
+    python3-pip \
+    dnsutils \
     && apt-get clean \
     && rm -rf \
     /var/lib/apt/lists/* \
     /tmp/* \
     /var/tmp/*
+
+# Install noisy to generate traffic (vpn keepalive)
+RUN git clone https://github.com/1tayH/noisy.git && cd noisy && pip3 install -r requirements.txt && mkdir -p /etc/noisy && mv config.json /etc/noisy/ && mv noisy.py /usr/local/bin/noisy && chmod +x /usr/local/bin/noisy
 
 # Install iptv-proxy
 RUN curl -o iptv-proxy.deb -skSL "https://github.com/pierre-emmanuelJ/iptv-proxy/releases/download/v${IPTV_VERSION}/iptv-proxy_${IPTV_VERSION}_linux_amd64.deb" \
